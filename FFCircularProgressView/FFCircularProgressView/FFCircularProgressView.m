@@ -19,7 +19,7 @@
 
 @implementation FFCircularProgressView
 
-#define kArrowSizeRatio .12
+#define kPlaySizeRatio  .2
 #define kStopSizeRatio  .3
 #define kTickWidthRatio .3
 
@@ -134,7 +134,7 @@
         if (!self.iconView && !self.iconPath)
         {
             if (!_hideProgressIcons)
-                [self drawArrow];
+                [self drawPlay];
         }
         else if (self.iconPath)
         {
@@ -234,28 +234,24 @@
     [_iconLayer setFillColor:self.tintColor.CGColor];
 }
 
-- (void) drawArrow {
+- (void) drawPlay {
     CGFloat radius = (self.bounds.size.width)/2;
-    CGFloat ratio = kArrowSizeRatio;
+    CGFloat ratio = kPlaySizeRatio;
     CGFloat segmentSize = self.bounds.size.width * ratio;
 
     // Draw icon
-    
     UIBezierPath *path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(0.0, 0.0)];
-    [path addLineToPoint:CGPointMake(segmentSize * 2.0, 0.0)];
-    [path addLineToPoint:CGPointMake(segmentSize * 2.0, segmentSize)];
-    [path addLineToPoint:CGPointMake(segmentSize * 3.0, segmentSize)];
-    [path addLineToPoint:CGPointMake(segmentSize, segmentSize * 3.3)];
-    [path addLineToPoint:CGPointMake(-segmentSize, segmentSize)];
-    [path addLineToPoint:CGPointMake(0.0, segmentSize)];
-    [path addLineToPoint:CGPointMake(0.0, 0.0)];
+    [path moveToPoint:CGPointMake(0, -segmentSize/2)];
+    [path addLineToPoint:CGPointMake(0, -segmentSize/2 + segmentSize * 2)];
+    [path addLineToPoint:CGPointMake(segmentSize * 1.65, -segmentSize/2 + segmentSize * 1)];
+    [path addLineToPoint:CGPointMake(0, -segmentSize/2)];
     [path closePath];
-
-    [path applyTransform:CGAffineTransformMakeTranslation(-segmentSize /2.0, -segmentSize / 1.2)];
+    
     [path applyTransform:CGAffineTransformMakeTranslation(radius * (1-ratio), radius* (1-ratio))];
-    _iconLayer.path = path.CGPath;
-    _iconLayer.fillColor = nil;
+    
+    [_iconLayer setPath:path.CGPath];
+    [_iconLayer setStrokeColor:_progressLayer.strokeColor];
+    [_iconLayer setFillColor:self.tintColor.CGColor];
 }
 
 #pragma mark Setters
